@@ -103,31 +103,58 @@ col3.metric("⚡ Energy Field", f"{energy_level}%")
 # ===========================================================
 # 🎯 Forecast Console
 # ===========================================================
-st.divider(); st.subheader("🎯 Titan Forecast Console")
-game = st.selectbox("Select Game",["GA Pick-3 Midday","GA Pick-3 Evening","FL Pick-4 Midday","FL Pick-4 Evening"])
-sets = st.slider("Number of Forecast Sets",1,10,5)
+st.divider()
+st.subheader("🎯 Titan Forecast Console")
 
+game = st.selectbox("Select Game", [
+    "GA Pick-3 Midday", "GA Pick-3 Evening",
+    "FL Pick-4 Midday", "FL Pick-4 Evening"
+])
+sets = st.slider("Number of Forecast Sets", 1, 10, 5)
+
+# ===================== ⚡ Generate Forecast =====================
 if st.button("⚡ Generate Forecast"):
-     selected_state = st.session_state.get("selected_state", "GA / FL")
+    selected_state = st.session_state.get("selected_state", "GA / FL")
     selected_game = game
     today = datetime.date.today().strftime("%B %d, %Y")
 
+    # 🔮 Titan confirmation message
+    st.info(f"🔮 Generating numbers for {selected_state} — {selected_game} — {today}...")
+
     forecasts = generate_forecast(game, sets)
-    st.success(f"Generated {len(forecasts)} forecast sets for {game}")
+    st.success(f"✅ Generated {len(forecasts)} forecast sets for {game}")
+
     for f in forecasts:
         if f["priority"]:
             st.markdown(
-                f"<div style='background:rgba(255,255,255,0.1);border:2px solid gold;padding:8px;border-radius:8px;'>"
-                f"<span class='priority'>⭐ Titan Priority Pick</span><br>"
-                f"<b>{f['number']}</b> — Confidence: <b>{f['confidence']}%</b></div>",
-                unsafe_allow_html=True)
+                f"""
+                <div style='background:rgba(255,255,255,0.1);
+                            border:2px solid #9ef;
+                            padding:8px;
+                            border-radius:6px;
+                            color:white;'>
+                    <span style='color:#ffd700;'>⭐ Titan Priority Pick</span><br>
+                    <b>{f['number']}</b> — Confidence:
+                    <b>{f['confidence']}%</b>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
-            color = "#00ffff" if f["confidence"]>90 else "#ff66cc"
+            color = "#00ffff" if f["confidence"] > 90 else "#ff6666"
             st.markdown(
-                f"<div style='background:rgba(255,255,255,0.05);border:1px solid {color};padding:6px;border-radius:6px;'>"
-                f"{f['number']} — Confidence: <b style='color:{color}'>{f['confidence']}%</b></div>",
-                unsafe_allow_html=True)
-
+                f"""
+                <div style='background:rgba(255,255,255,0.05);
+                            border:1px solid {color};
+                            padding:6px;
+                            border-radius:5px;
+                            color:white;'>
+                    {f['number']} — Confidence:
+                    <b style='color:{color};'>{f['confidence']}%</b>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 # ===========================================================
 # 📥 Save Result Entry
 # ===========================================================
