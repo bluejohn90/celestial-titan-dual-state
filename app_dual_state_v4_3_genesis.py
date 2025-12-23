@@ -108,6 +108,10 @@ game = st.selectbox("Select Game",["GA Pick-3 Midday","GA Pick-3 Evening","FL Pi
 sets = st.slider("Number of Forecast Sets",1,10,5)
 
 if st.button("⚡ Generate Forecast"):
+     selected_state = st.session_state.get("selected_state", "GA / FL")
+    selected_game = game
+    today = datetime.date.today().strftime("%B %d, %Y")
+
     forecasts = generate_forecast(game, sets)
     st.success(f"Generated {len(forecasts)} forecast sets for {game}")
     for f in forecasts:
